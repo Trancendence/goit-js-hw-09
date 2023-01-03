@@ -7,7 +7,7 @@ function getRandomHexColor() {
   const stopButton = document.querySelector('button.stop')
   
   changeButton.addEventListener('click', e => {
-    // changeButton.attr('disabled', true); 
+    changeButton.attr('disabled', true); 
     setInterval(() => {
         let color = getRandomHexColor();
         body.style.backgroundColor = color;
