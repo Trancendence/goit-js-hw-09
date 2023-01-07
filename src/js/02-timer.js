@@ -1,61 +1,86 @@
-import flatpickr from "flatpickr";
-// Додатковий імпорт стилів
-import "flatpickr/dist/flatpickr.min.css";
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import Notiflix from 'notiflix';
+import 'notiflix/dist/notiflix-3.2.5.min.css';
 
-const input = document.querySelector('#datatime-picker');
-const fp = flatpickr(input);
+const startBtn = document.querySelector('button[data-start]');
+const dateChosen = document.querySelector('#datetime-picker');
+const d = document.querySelector('[data-days]');
+const h = document.querySelector('[data-hours]');
+const m = document.querySelector('[data-minutes]');
+const s = document.querySelector('[data-seconds]');
+
+let timer = null;
+
+startBtn.disabled = true;
+
+//flatpickr
+
 const options = {
-    enableTime: true,
-    time_24hr: true,
-    defaultDate: new Date(),
-    minuteIncrement: 1,
-    onClose(selectedDates) {
-      console.log(selectedDates[0]);
-    },
-  };
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose(selectedDate) {
+    // const currentDate = new Date();
+    if (selectedDate[0] <= new Date()) {
+      startBtn.disabled = true;
+      Notiflix.Notify.failure('Please choose a date in the future');
+    } else {
+      startBtn.disabled = false;
 
-const btnStart = document.querySelector('.js-btnStart');
-input.addEventListener('change', getDayX)
+      startBtn.addEventListener('click', countdownTime);
 
-const startTime = Date.now();
-console.log('startTime', startTime);
+      // time counter
 
-setInterval(() => {
-    const currentTime = Date.now();
-    const ms = selectedDates - Date.now();
-    const timeComponents = convertMs(ms);
-    if (timeComponents < 1000) {
-        setInterval = 0;
+      function countdownTime() {
+        timer = setInterval(() => {
+          startBtn.disabled = true;
+
+          // https://stackoverflow.com/questions/4310953/invalid-date-in-safari
+
+          const dateChoosenMs = new Date(dateChosen.value.replace(/-/g, '/')).getTime();
+          const now = new Date().getTime();
+          const timeLeft = dateChoosenMs - now;
+
+          const { days, hours, minutes, seconds } = convertMs(timeLeft);
+
+          d.innerHTML = days < 10 ? addLeadingZero(days) : days;
+          h.innerHTML = hours < 10 ? addLeadingZero(hours) : hours;
+          m.innerHTML = minutes < 10 ? addLeadingZero(minutes) : minutes;
+          s.innerHTML = seconds < 10 ? addLeadingZero(seconds) : seconds;
+
+          if (timeLeft < 1000) {
+            clearInterval(timer);
+            startBtn.disabled = false;
+          }
+        }, 1000);
+      }
+
+      // addLeadingZero
+
+      function addLeadingZero(value) {
+        const stringValue = String(value);
+        return stringValue.padStart(2, '0');
+      }
+
+      // convert 
+      
+      function convertMs(ms) {
+        const second = 1000;
+        const minute = second * 60;
+        const hour = minute * 60;
+        const day = hour * 24;
+
+        const days = Math.floor(ms / day);
+        const hours = Math.floor((ms % day) / hour);
+        const minutes = Math.floor(((ms % day) % hour) / minute);
+        const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+
+        return { days, hours, minutes, seconds };
+      }
     }
-    console.log('timeComponents:', timeComponents);
-}, 1000);
-
-function getDayX() {
-    const selectedDate = Date.now(input.value);
-    console.log('selectedDate:', selectedDate)
+  },
 };
 
-function addLeadingZero(value) {
-    return String(value).padStart(2, '0');
-}
-
-function convertMs(ms) {
-    // Number of milliseconds per unit of time
-    const second = 1000;
-    const minute = second * 60;
-    const hour = minute * 60;
-    const day = hour * 24;
-  
-    // Remaining days
-    const days = Math.floor(ms / day);
-    // Remaining hours
-    const hours = Math.floor((ms % day) / hour);
-    // Remaining minutes
-    const minutes = Math.floor(((ms % day) % hour) / minute);
-    // Remaining seconds
-    const seconds = Math.floor((((ms % day) % hour) % minute) / second);
-  
-    return { days, hours, minutes, seconds };
-  }
-  
- 
+flatpickr(dateChosen, options);
