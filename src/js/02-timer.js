@@ -38,41 +38,43 @@ const options = {
       return;
     }
     startBtn.removeAttribute('disabled');
-
-    const showTimer = () => {
-      const now = new Date();
-      localStorage.setItem('selectedData', selectedDates[0]);
-      const selectData = new Date(localStorage.getItem('selectedData'));
-
-      if (!selectData) return;
-
-      const diff = selectData - now;
-      const { days, hours, minutes, seconds } = convertMs(diff);
-      daysRef.textContent = days;
-      hoursRef.textContent = addLeadingZero(hours);
-      minutesRef.textContent = addLeadingZero(minutes);
-      secondsRef.textContent = addLeadingZero(seconds);
-
-      if (
-        daysRef.textContent === '0' &&
-        hoursRef.textContent === '00' &&
-        minutesRef.textContent === '00' &&
-        secondsRef.textContent === '00'
-      ) {
-        clearInterval(timerId);
-      }
-    };
-
-    const onClick = () => {
-      if (timerId) {
-        clearInterval(timerId);
-      }
-      showTimer();
-      timerId = setInterval(showTimer, 1000);
-    };
-
-    startBtn.addEventListener('click', onClick);
-  },
+  }
 };
+
+const showTimer = () => {
+  const now = new Date();
+  localStorage.setItem('selectedData', selectedDates[0]);
+  const selectData = new Date(localStorage.getItem('selectedData'));
+
+  if (!selectData) return;
+
+  const diff = selectData - now;
+  const { days, hours, minutes, seconds } = convertMs(diff);
+  daysRef.textContent = days;
+  hoursRef.textContent = addLeadingZero(hours);
+  minutesRef.textContent = addLeadingZero(minutes);
+  secondsRef.textContent = addLeadingZero(seconds);
+
+  if (
+    diff < 1000
+    // daysRef.textContent === '0' &&
+    // hoursRef.textContent === '00' &&
+    // minutesRef.textContent === '00' &&
+    // secondsRef.textContent === '00'
+  ) {
+    clearInterval(timerId);
+  }
+};
+
+const onClick = () => {
+  if (timerId) {
+    clearInterval(timerId);
+  }
+  showTimer();
+  timerId = setInterval(showTimer, 1000);
+};
+
+startBtn.addEventListener('click', onClick);
+
 
 flatpickr('#datetime-picker', { ...options });
