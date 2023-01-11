@@ -37,13 +37,15 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    if (selDate < new Date()) {
+    if (selectedDates < new Date()) {
       Notify.failure('Please choose a date in the future');
       return;
     }
-    if (selDate > new Date()) {
-    startBtn.removeAttribute('disabled');
+    if (selectedDates > new Date()) {
+      selectedDates = selDate
     }
+    startBtn.removeAttribute('disabled');
+    
   }
 };
 
