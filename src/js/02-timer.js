@@ -25,6 +25,9 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
+// let selectedDates;
+const selDate = [0];
+
 const addLeadingZero = value => String(value).padStart(2, 0);
 
 const options = {
@@ -33,7 +36,7 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    if (selectedDates[0] < new Date()) {
+    if (selDate < new Date()) {
       Notify.failure('Please choose a date in the future');
       return;
     }
@@ -43,7 +46,7 @@ const options = {
 
 const showTimer = () => {
   const now = new Date();
-  localStorage.setItem('selectedData', selectedDates[0]);
+  localStorage.setItem('selectedData', selDate);
   const selectData = new Date(localStorage.getItem('selectedData'));
 
   if (!selectData) return;
