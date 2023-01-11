@@ -25,8 +25,9 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-// let selectedDates;
-const selDate = [0];
+
+
+const selDate = selectedDates[0];
 
 const addLeadingZero = value => String(value).padStart(2, 0);
 
@@ -40,7 +41,9 @@ const options = {
       Notify.failure('Please choose a date in the future');
       return;
     }
+    if (selDate > new Date()) {
     startBtn.removeAttribute('disabled');
+    }
   }
 };
 
