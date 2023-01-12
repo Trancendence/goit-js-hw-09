@@ -27,7 +27,7 @@ function convertMs(ms) {
 
 
 
-const selDate = now;
+const selDate = null;
 
 const addLeadingZero = value => String(value).padStart(2, 0);
 
