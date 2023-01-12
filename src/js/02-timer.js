@@ -27,7 +27,7 @@ function convertMs(ms) {
 
 
 
-const selDate = selectedDates[0];
+const selDate = now;
 
 const addLeadingZero = value => String(value).padStart(2, 0);
 
@@ -37,12 +37,12 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    if (selectedDates < new Date()) {
+    if (selectedDates[0] < new Date()) {
       Notify.failure('Please choose a date in the future');
       return;
     }
-    if (selectedDates > new Date()) {
-      selectedDates = selDate
+    if (selectedDates[0] > new Date()) {
+      selDate = selectedDates[0]
     }
     startBtn.removeAttribute('disabled');
     
